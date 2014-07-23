@@ -4,7 +4,7 @@
 #= require swfobject
 #= require_tree .
 
-MESSAGES = [
+CHANNEL_MESSAGES = [
   'Hey there',
   'How are you doing brah',
   'Kappa',
@@ -15,22 +15,39 @@ MESSAGES = [
 $ ->
   player = null
   lastVideoTime = 0
+  messages = []
 
-  removeFutureMessages = (->)
-  addPastMessages = (->)
+  $messages = $('.messages')
+
+  removeFutureMessages = (videoTime) ->
+    messages.slice(0).forEach (message, index) ->
+      timeStamp = index * 100
+
+      if videoTime < timeStamp
+        messages.splice(index, 1)
+        $messages.find("li:nth-child(#{index + 1})").remove()
+
+  addPastMessages = (videoTime) ->
+    CHANNEL_MESSAGES.forEach (message, index) ->
+      timeStamp = index * 100
+
+      if timeStamp < videoTime && messages.indexOf(message) == -1
+        messages.push(message)
+        $messages.append("<li>#{message}</li>")
 
   updateChat = ->
     return if player.isPaused()
     videoTime = player.getVideoTime()
 
     if videoTime < lastVideoTime
-      removeFutureMessages()
+      removeFutureMessages(videoTime)
     else if videoTime > lastVideoTime
-      addPastMessages()
+      addPastMessages(videoTime)
+
+    lastVideoTime = videoTime
 
   startRunLoop = ->
-    updateChat()
-    setTimeout(startRunLoop, 100)
+    setInterval(updateChat, 100)
 
   window.onTwitchPlayerEvent = (data) ->
     data.forEach (event) ->
@@ -59,6 +76,5 @@ $ ->
     },
 
     null,
-
     -> player = $('#twitch_player')[0]
   )

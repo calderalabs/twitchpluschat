@@ -12,3 +12,5 @@ gem 'spring', group: :development
 gem 'swfobject-rails'
 gem 'turbolinks'
 gem 'uglifier'
+
+gem 'rails-assets-ember'

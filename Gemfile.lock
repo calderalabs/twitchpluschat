@@ -69,6 +69,11 @@ GEM
       bundler (>= 1.3.0, < 2.0)
       railties (= 4.1.4)
       sprockets-rails (~> 2.0)
+    rails-assets-ember (1.6.1)
+      rails-assets-handlebars (>= 1.0.0, < 2.0.0)
+      rails-assets-jquery (>= 1.7.0, <= 2.1.0)
+    rails-assets-handlebars (1.3.0)
+    rails-assets-jquery (2.1.0)
     railties (4.1.4)
       actionpack (= 4.1.4)
       activesupport (= 4.1.4)
@@ -121,6 +126,7 @@ DEPENDENCIES
   jquery-rails
   pg
   rails
+  rails-assets-ember
   sass-rails
   sdoc
   spring
