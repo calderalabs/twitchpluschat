@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 source 'https://rails-assets.org'
 
 gem 'coffee-rails'
+gem 'handlebars_assets'
 gem 'jbuilder'
 gem 'jquery-rails'
 gem 'pg'
