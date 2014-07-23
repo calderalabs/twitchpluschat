@@ -7,6 +7,7 @@ gem 'jbuilder'
 gem 'jquery-rails'
 gem 'pg'
 gem 'rails'
+gem 'rails_12factor', group: :production
 gem 'sass-rails'
 gem 'sdoc', group: :doc
 gem 'spring', group: :development
