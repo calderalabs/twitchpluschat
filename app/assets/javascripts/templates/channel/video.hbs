@@ -1,3 +1,9 @@
 <article class="video">
   {{view "player"}}
+
+  <ul>
+    {{#each visibleMessages}}
+      <li>{{text}}</li>
+    {{/each}}
+  </ul>
 </article>

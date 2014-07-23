@@ -5,71 +5,52 @@ Twitchpluschat.PlayerView = Ember.View.extend
     "#{@get('elementId')}-twitch-player"
   ).property('elementId')
 
+  eventHandlerName: (->
+    "onPlayerEvent#{@get('elementId')}"
+  ).property('elementId')
+
+  twitchPlayer: null
+
+  updateVideoTime: ->
+    twitchPlayer = @get('twitchPlayer')
+    videoTime = twitchPlayer.getVideoTime()
+
+    @set('controller.videoTime', videoTime) unless twitchPlayer.isPaused()
+
+  startUpdatingVideoTime: ->
+    Ember.run.later(
+      this, (->
+        @updateVideoTime()
+        @startUpdatingVideoTime()
+      ), 100
+    )
+
   didInsertElement: ->
     @_super.apply(this, arguments)
 
-    CHANNEL_MESSAGES = [
-      'Hey there',
-      'How are you doing brah',
-      'Kappa',
-      'Lappa',
-      'Keepo'
-    ]
+    window[@get('eventHandlerName')] = (data) =>
+      twitchPlayer = @get('twitchPlayer')
 
-    twitchPlayer = null
-    lastVideoTime = 0
-    messages = []
-
-    $messages = $('.messages')
-
-    removeFutureMessages = (videoTime) ->
-      messages.slice(0).forEach (message, index) ->
-        timeStamp = index * 100
-
-        if videoTime < timeStamp
-          messages.splice(index, 1)
-          $messages.find("li:nth-child(#{index + 1})").remove()
-
-    addPastMessages = (videoTime) ->
-      CHANNEL_MESSAGES.forEach (message, index) ->
-        timeStamp = index * 100
-
-        if timeStamp < videoTime && messages.indexOf(message) == -1
-          messages.push(message)
-          $messages.append("<li>#{message}</li>")
-
-    updateChat = ->
-      return if twitchPlayer.isPaused()
-      videoTime = twitchPlayer.getVideoTime()
-
-      if videoTime < lastVideoTime
-        removeFutureMessages(videoTime)
-      else if videoTime > lastVideoTime
-        addPastMessages(videoTime)
-
-      lastVideoTime = videoTime
-
-    startRunLoop = ->
-      setInterval(updateChat, 100)
-
-    window.onTwitchPlayerEvent = (data) ->
-      data.forEach (event) ->
-        switch event.event
-          when 'playerInit'
-            twitchPlayer.playVideo()
-          when 'videoPlaying'
-            startRunLoop()
+      Ember.run =>
+        data.forEach (event) =>
+          switch event.event
+            when 'playerInit'
+              twitchPlayer.playVideo()
+            when 'videoPlaying'
+              @startUpdatingVideoTime()
 
     swfobject.embedSWF(
       '//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf',
+
       @get('twitchPlayerId'),
+
       '640', '400', '11', null,
 
       {
-        eventsCallback: 'onTwitchPlayerEvent'
+        eventsCallback: @get('eventHandlerName')
         embed: 1
-        channel: 'arteezy'
-        archive_id: 543686965
+        channel: @get('controller.channelId')
+        archive_id: @get('controller.id')
         auto_play: true
       },
 
@@ -79,5 +60,11 @@ Twitchpluschat.PlayerView = Ember.View.extend
       },
 
       null,
-      => twitchPlayer = @$("##{@get('twitchPlayerId')}")[0]
+
+      => @set('twitchPlayer', @$("##{@get('twitchPlayerId')}")[0])
     )
+
+    willDestroyElement: ->
+      @_super.apply(this, arguments)
+      delete window[@get('eventHandlerName')]
+      Ember.run.cancel(this, updateVideoTime)

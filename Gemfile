@@ -15,3 +15,4 @@ gem 'turbolinks'
 gem 'uglifier'
 
 gem 'rails-assets-ember'
+gem 'rails-assets-ember-data', '1.0.0.beta.8'
