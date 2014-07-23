@@ -4,5 +4,5 @@ Twitchpluschat.initializer
   initialize: ->
     Twitchpluschat.deferReadiness()
 
-    Twitch.init { clientId: '50yklplgktsrxbvyigawaqj0mtf6zys' }, (error, status) ->
+    Twitch.init { clientId: '50yklplgktsrxbvyigawaqj0mtf6zys' }, ->
       Twitchpluschat.advanceReadiness()

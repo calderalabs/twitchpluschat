@@ -63,5 +63,6 @@ Twitchpluschat.PlayerView = Ember.View.extend
 
     willDestroyElement: ->
       @_super.apply(this, arguments)
+
       delete window[@get('eventHandlerName')]
       Ember.run.cancel(this, updateVideoTime)
