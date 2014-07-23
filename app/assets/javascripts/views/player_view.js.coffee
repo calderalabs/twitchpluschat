@@ -41,9 +41,7 @@ Twitchpluschat.PlayerView = Ember.View.extend
 
     swfobject.embedSWF(
       '//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf',
-
       @get('twitchPlayerId'),
-
       '640', '400', '11', null,
 
       {
@@ -60,7 +58,6 @@ Twitchpluschat.PlayerView = Ember.View.extend
       },
 
       null,
-
       => @set('twitchPlayer', @$("##{@get('twitchPlayerId')}")[0])
     )
 

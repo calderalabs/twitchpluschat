@@ -1,4 +1,6 @@
-Twitchpluschat.Message = DS.Model.extend()
+Twitchpluschat.Message = DS.Model.extend
+  text: DS.attr('string')
+  timestamp: DS.attr('number')
 
 Twitchpluschat.Message.FIXTURES = [
   { id: 1, text: 'Hey there', timestamp: 100 },
