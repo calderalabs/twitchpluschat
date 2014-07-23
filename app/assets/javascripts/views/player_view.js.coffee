@@ -15,7 +15,7 @@ Twitchpluschat.PlayerView = Ember.View.extend
     twitchPlayer = @get('twitchPlayer')
     videoTime = twitchPlayer.getVideoTime()
 
-    @set('controller.videoTime', videoTime) unless twitchPlayer.isPaused()
+    @set('controller.currentTime', videoTime) unless twitchPlayer.isPaused()
 
   startUpdatingVideoTime: ->
     Ember.run.later(

@@ -1,6 +1,10 @@
 Twitchpluschat.ChannelVideoController = Ember.ObjectController.extend
-  videoTime: null
+  currentTime: null
 
   visibleMessages: (->
-    @get('messages')
-  ).property('messages')
+    currentTime = @get('currentTime')
+    return [] unless currentTime?
+
+    @get('messages').filter (message) ->
+      message.get('timestamp') < currentTime
+  ).property('messages.@each.timestamp', 'currentTime')
