@@ -7,19 +7,9 @@ Twitchpluschat.ChannelRoute = Ember.Route.extend
     Ember.Object.create(id: params.channel_id)
 
 Twitchpluschat.ChannelVideoRoute = Ember.Route.extend
-  findVideo: (id) ->
-    new Ember.RSVP.Promise (resolve, reject) =>
-      Twitch.api { method: "videos/a#{id}" }, (error, data) =>
-        if error?
-          reject(error)
-        else
-          data.id = data._id.substring(1)
-          @store.pushPayload('video', videos: [data])
-          resolve(@store.find('video', id))
-
   model: (params) ->
     Ember.RSVP.hash
-      video: @findVideo(params.video_id)
+      video: @store.find('video', "a#{params.video_id}")
       channelId: @modelFor('channel').get('id')
       messages: @store.find('message')
 

@@ -8,15 +8,17 @@
 #= require router
 #= require_tree ./templates
 #= require_tree ./initializers
+#= require serializers
+#= require adapters
 #= require models
 #= require controllers
 #= require routes
 #= require views
 
-Twitchpluschat.ApplicationStore = DS.Store.extend
+Twitchpluschat.ApplicationStore = DS.Store.extend()
+
+Twitchpluschat.ApplicationAdapter = DS.ActiveModelAdapter.extend
   namespace: 'api'
   host: 'http://localhost:3000'
 
-Twitchpluschat.ApplicationAdapter = DS.ActiveModelAdapter.extend()
 Twitchpluschat.ApplicationSerializer = DS.ActiveModelSerializer.extend()
-Twitchpluschat.MessageAdapter = DS.FixtureAdapter.extend()
