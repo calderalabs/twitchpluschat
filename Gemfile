@@ -1,10 +1,14 @@
 source 'https://rubygems.org'
 source 'https://rails-assets.org'
 
+gem 'active_model_serializers'
+gem 'activeresource', require: 'active_resource'
+gem 'cached_resource'
 gem 'coffee-rails'
 gem 'handlebars_assets'
 gem 'jbuilder'
 gem 'jquery-rails'
+gem 'oj'
 gem 'pg'
 gem 'rails'
 gem 'rails_12factor', group: :production

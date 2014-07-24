@@ -1,5 +1,3 @@
-#= require_self
-
 window.Twitchpluschat = Ember.Application.create
   LOG_ACTIVE_GENERATION: true
   LOG_MODULE_RESOLVER: true
