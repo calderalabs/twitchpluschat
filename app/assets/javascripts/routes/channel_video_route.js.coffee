@@ -6,6 +6,6 @@ Twitchpluschat.ChannelVideoRoute = Ember.Route.extend
       messages: @store.find('message')
 
   setupController: (controller, model) ->
-    controller.set('model', model.video)
+    controller.set('content', model.video)
     controller.set('channelId', model.channelId)
     controller.set('messages', model.messages)

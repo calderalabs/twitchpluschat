@@ -1,4 +1,4 @@
-Twitchpluschat.Video = DS.Model.extend
+Twitchpluschat.Emoticon = DS.Model.extend
   width: DS.attr('number')
   height: DS.attr('number')
   url: DS.attr('string')

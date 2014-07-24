@@ -1,11 +1,6 @@
-<article class="video">
+<section class="video">
   <h1>{{title}}</h1>
 
   {{view "player"}}
-
-  <ul>
-    {{#each visibleMessages}}
-      <li>{{text}}</li>
-    {{/each}}
-  </ul>
-</article>
+  {{render "chat" messages}}
+</section>

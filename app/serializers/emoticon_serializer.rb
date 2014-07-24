@@ -1,5 +1,5 @@
 class EmoticonSerializer < ActiveModel::Serializer
-  attributes :id, :width, :height, :url, :emoticon_set
+  attributes :id, :width, :height, :url, :set_id
 
   def id
     object.regex
@@ -17,7 +17,7 @@ class EmoticonSerializer < ActiveModel::Serializer
     image.url
   end
 
-  def emoticon_set
+  def set_id
     image.emoticon_set
   end
 

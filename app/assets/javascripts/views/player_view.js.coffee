@@ -1,5 +1,5 @@
 Twitchpluschat.PlayerView = Ember.View.extend
-  templateName: 'player_view'
+  templateName: 'player'
 
   twitchPlayerId: (->
     "#{@get('elementId')}-twitch-player"
