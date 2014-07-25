@@ -1,5 +1,13 @@
-Twitchpluschat.ChannelVideoController = Ember.ObjectController.extend
-  currentTime: null
+Twitchpluschat.ChannelVideoController = Ember.ObjectController.extend Ember.Evented,
+  _currentTime: null
+
+  currentTime: ((key, value)->
+    if arguments.length > 1
+      @set('_currentTime', value)
+      @trigger('currentTime:change')
+
+    @get('_currentTime')
+  ).property()
 
   absoluteCurrentTime: (->
     recordedAt = @get('recordedAt')
