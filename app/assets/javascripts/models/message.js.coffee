@@ -13,7 +13,7 @@ Twitchpluschat.Message.FIXTURES = [
   {
     id: 2,
     userName: 'Arteezy',
-    text: 'How are you doing brah',
+    text: 'How are you doing brah rtzSmooth',
     timestamp: new Date('Wed Jul 02 2014 03:46:54 GMT+0100 (BST)')
   },
   {
