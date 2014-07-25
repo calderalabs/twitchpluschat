@@ -1,6 +1,8 @@
 Twitchpluschat.ChatController = Ember.ArrayController.extend
   MaxVisibleMessages: 100
 
+  _parentController: null
+
   needs: ['channelVideo']
   channelVideo: Ember.computed.alias('controllers.channelVideo')
   messagesSorting: ['timestamp']
@@ -22,21 +24,26 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
     @get('pastMessages').slice(-@get('MaxVisibleMessages') - 1)
   ).property('pastMessages')
 
-  parentControllerDidChange: (->
-    @get('parentController').on('currentTime:change', =>
-      currentMessages = @get('currentMessages')
-      visibleMessages = @get('visibleMessages')
+  parentController: ((key, value) ->
+    if arguments.length > 1
+      @set('_parentController', value)
 
-      currentMessages.beginPropertyChanges()
+      @get('parentController').on('currentTimeDidChange', =>
+        currentMessages = @get('currentMessages')
+        visibleMessages = @get('visibleMessages')
 
-      currentMessages.forEach (message) ->
-        if visibleMessages.indexOf(message) == -1
-          currentMessages.removeObject(message)
+        currentMessages.beginPropertyChanges()
 
-      visibleMessages.forEach (message, index) ->
-        if currentMessages.indexOf(message) == -1
-          currentMessages.insertAt(index, message)
+        currentMessages.forEach (message) ->
+          if visibleMessages.indexOf(message) == -1
+            currentMessages.removeObject(message)
 
-      currentMessages.endPropertyChanges()
-    )
-  ).observes('parentController').on('init')
+        visibleMessages.forEach (message, index) ->
+          if currentMessages.indexOf(message) == -1
+            currentMessages.insertAt(index, message)
+
+        currentMessages.endPropertyChanges()
+      )
+
+    @get('_parentController')
+  ).property()

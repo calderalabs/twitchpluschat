@@ -4,7 +4,7 @@ Twitchpluschat.ChannelVideoController = Ember.ObjectController.extend Ember.Even
   currentTime: ((key, value)->
     if arguments.length > 1
       @set('_currentTime', value)
-      @trigger('currentTime:change')
+      @trigger('currentTimeDidChange')
 
     @get('_currentTime')
   ).property()
