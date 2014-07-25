@@ -1,0 +1,16 @@
+.message {
+  .user-name {
+    font-weight: bold;
+
+    &:after {
+      content: ': '
+    }
+  }
+}
+
+.chat {
+  ul {
+    padding-left: 0;
+    list-style-type: none;
+  }
+}
