@@ -31,7 +31,7 @@ Twitchpluschat.Message.FIXTURES = [
   {
     id: 5,
     userName: 'Sing'
-    text: 'Keepo',
+    text: 'Fock Keepo',
     timestamp: new Date('Wed Jul 02 2014 03:58:54 GMT+0100 (BST)')
   }
 ]
