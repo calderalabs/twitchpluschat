@@ -1,0 +1,2 @@
+class Video < TwitchModel
+end
