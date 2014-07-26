@@ -1,6 +1,6 @@
 Twitchpluschat.MessageController = Ember.ObjectController.extend
-  needs: ['emoticons']
-  emoticons: Ember.computed.alias('controllers.emoticons')
+  needs: ['emoticonSets']
+  emoticonSets: Ember.computed.alias('controllers.emoticonSets')
 
   textPartClass: Ember.ObjectProxy.extend
     type: 'text'
@@ -10,10 +10,21 @@ Twitchpluschat.MessageController = Ember.ObjectController.extend
 
   matchingEmoticons: (->
     text = @get('text')
+    emoticonSetIds = @get('emoticonSetIds')
+    emoticonSets = @get('emoticonSets')
 
-    @get('emoticons').filter (emoticon) ->
+    matchingSets = emoticonSets.filter (set) ->
+      id = set.get('id')
+      id == 'default' || emoticonSetIds.indexOf(id) != -1
+
+    matchingEmoticons = matchingSets.reduce(((memo, set) ->
+      memo.push.apply(memo, set.get('emoticons').toArray())
+      memo
+    ), [])
+
+    matchingEmoticons.filter (emoticon) ->
       text.match(emoticon.get('regexp'))
-  ).property('emoticons.@each.regexp', 'text')
+  ).property('emoticonSets', 'text')
 
   parts: (->
     textPartClass = @get('textPartClass')

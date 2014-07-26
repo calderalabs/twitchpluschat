@@ -1,4 +1,4 @@
 Twitchpluschat.ApplicationRoute = Ember.Route.extend
   activate: ->
-    @store.find('emoticon').then (emoticons) =>
-      @controllerFor('emoticons').set('content', emoticons)
+    @store.find('emoticonSet').then (sets) =>
+      @controllerFor('emoticonSets').set('content', sets)
