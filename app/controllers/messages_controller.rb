@@ -9,7 +9,7 @@ class MessagesController < ApplicationController
 
       messages = Message.where(
         created_at: (video.recorded_at..video.ended_at),
-        channel_id: video.channel.name
+        channel_id: video.channel_id
       )
     end
 
