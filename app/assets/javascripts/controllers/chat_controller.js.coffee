@@ -5,7 +5,7 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
 
   needs: ['channelVideo']
   channelVideo: Ember.computed.alias('controllers.channelVideo')
-  messagesSorting: ['timestamp']
+  messagesSorting: ['createdAt']
   sortedMessages: Ember.computed.sort('content', 'messagesSorting')
   currentMessages: []
   arrangedContent: Ember.computed.alias('currentMessages')
@@ -15,10 +15,10 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
 
     if absoluteCurrentTime?
       @get('content').filter (message) ->
-        message.get('timestamp') < absoluteCurrentTime
+        message.get('createdAt') <= absoluteCurrentTime
     else
       []
-  ).property('content.@each.timestamp', 'channelVideo.absoluteCurrentTime')
+  ).property('content.@each.createdAt', 'channelVideo.absoluteCurrentTime')
 
   visibleMessages: (->
     @get('pastMessages').slice(-@get('MaxVisibleMessages') - 1)

@@ -3,7 +3,7 @@ Twitchpluschat.ChannelVideoRoute = Ember.Route.extend
     Ember.RSVP.hash
       video: @store.find('video', params.video_id)
       channelId: @modelFor('channel').get('id')
-      messages: @store.find('message')
+      messages: @store.find('message', video_id: params.video_id)
 
   setupController: (controller, model) ->
     controller.set('content', model.video)

@@ -7,7 +7,11 @@ class LoggingBot
     private
 
     def log_message(m)
-      puts "#{m.user.nick}: #{m.message}"
+      Message.create(
+        channel_id: m.channel.name[1..-1],
+        user_id: m.user.nick,
+        text: m.message
+      )
     end
   end
 end

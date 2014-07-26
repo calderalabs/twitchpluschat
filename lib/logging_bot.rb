@@ -11,6 +11,8 @@ class LoggingBot
         c.plugins.plugins = [Plugin]
       end
     end
+
+    @bot.loggers.level = :error
   end
 
   def start
