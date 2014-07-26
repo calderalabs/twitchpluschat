@@ -1,4 +1,4 @@
-Twitchpluschat.ChannelVideoController = Ember.ObjectController.extend Ember.Evented,
+Twitchpluschat.VideoController = Ember.ObjectController.extend Ember.Evented,
   _currentTime: null
 
   currentTime: ((key, value)->
