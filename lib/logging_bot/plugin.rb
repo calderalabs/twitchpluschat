@@ -4,19 +4,31 @@ class LoggingBot
 
     listen_to :connect, method: :on_connect
     listen_to :channel, method: :on_message
+    timer 60, method: :flush_queue
 
     private
 
+    attr_reader :message_queue
+
     def on_connect(m)
+      @message_queue = []
       bot.irc.send('TWITCHCLIENT 3')
     end
 
     def on_message(m)
-      if m.user.nick == 'jtv'
-        update_user_data(m)
-      else
-        log_message(m)
+      message_queue << m
+    end
+
+    def flush_queue
+      message_queue.each do |m|
+        if m.user.nick == 'jtv'
+          update_user_data(m)
+        else
+          log_message(m)
+        end
       end
+
+      message_queue.clear
     end
 
     def update_user_data(m)
