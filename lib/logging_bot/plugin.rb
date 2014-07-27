@@ -2,20 +2,25 @@ class LoggingBot
   class Plugin
     include Cinch::Plugin
 
-    listen_to :connect, method: :on_connect
-    listen_to :channel, method: :on_message
+    listen_to :connect, method: :initialize_client
+    listen_to :channel, method: :enqueue_message
     timer 60, method: :flush_queue
 
     private
 
     attr_reader :message_queue
 
-    def on_connect(m)
+    def initialize_client(m)
       @message_queue = []
+
       bot.irc.send('TWITCHCLIENT 3')
+
+      at_exit do
+        flush_queue
+      end
     end
 
-    def on_message(m)
+    def enqueue_message(m)
       message_queue << m
     end
 
