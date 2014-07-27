@@ -4,7 +4,7 @@ class LoggingBot
 
     listen_to :connect, method: :initialize_client
     listen_to :channel, method: :enqueue_message
-    timer 60, method: :flush_queue
+    timer 60, method: :flush_queue, threaded: false
 
     private
 
@@ -49,6 +49,7 @@ class LoggingBot
 
     def log_message(m)
       Message.create(
+        created_at: m.time,
         channel_id: m.channel.name[1..-1],
         user: User.find_or_create_by(name: m.user.nick),
         text: m.message
