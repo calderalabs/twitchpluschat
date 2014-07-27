@@ -1,4 +1,6 @@
 class Video < TwitchModel
+  cached_resource
+
   def channel_id
     channel.name
   end

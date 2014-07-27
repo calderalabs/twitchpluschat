@@ -8,7 +8,6 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
   messagesSorting: ['createdAt']
   sortedMessages: Ember.computed.sort('content', 'messagesSorting')
   currentMessages: []
-  arrangedContent: Ember.computed.alias('currentMessages')
 
   pastMessages: ((message) ->
     absoluteCurrentTime = @get('video.absoluteCurrentTime')
