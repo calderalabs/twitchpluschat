@@ -27,22 +27,33 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
     if arguments.length > 1
       @set('_parentController', value)
 
-      @get('parentController').on('currentTimeDidChange', =>
-        currentMessages = @get('currentMessages')
-        visibleMessages = @get('visibleMessages')
-
-        currentMessages.beginPropertyChanges()
-
-        currentMessages.forEach (message) ->
-          if visibleMessages.indexOf(message) == -1
-            currentMessages.removeObject(message)
-
-        visibleMessages.forEach (message, index) ->
-          if currentMessages.indexOf(message) == -1
-            currentMessages.insertAt(index, message)
-
-        currentMessages.endPropertyChanges()
-      )
+      @get('parentController').on 'currentTimeDidChange', =>
+        @findMessages()
 
     @get('_parentController')
   ).property()
+
+  findMessages: ->
+    absoluteCurrentTime = @get('video.absoluteCurrentTime')
+    return unless absoluteCurrentTime?
+
+    @store.findMessages(
+      videoId: @get('video.id'),
+      fromTime: absoluteCurrentTime
+    ).then (messages) =>
+      @set('content', @store.all('message'))
+
+      currentMessages = @get('currentMessages')
+      visibleMessages = @get('visibleMessages')
+
+      currentMessages.beginPropertyChanges()
+
+      currentMessages.forEach (message) ->
+        if visibleMessages.indexOf(message) == -1
+          currentMessages.removeObject(message)
+
+      visibleMessages.forEach (message, index) ->
+        if currentMessages.indexOf(message) == -1
+          currentMessages.insertAt(index, message)
+
+      currentMessages.endPropertyChanges()

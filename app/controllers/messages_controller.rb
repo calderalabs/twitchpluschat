@@ -5,14 +5,34 @@ class MessagesController < ApplicationController
     messages = Message.all
 
     if params[:video_id].present?
-      video = Video.find("a#{params[:video_id]}")
-
       messages = Message.where(
-        created_at: (video.recorded_at..video.ended_at),
+        created_at: (start_time..end_time),
         channel_id: video.channel_id
       ).includes(:user)
     end
 
     respond_with messages
+  end
+
+  private
+
+  def video
+    @video ||= Video.find("a#{params[:video_id]}")
+  end
+
+  def start_time
+    if params[:from_time].present?
+      Time.at(params[:from_time].to_i).to_datetime
+    else
+      video.recorded_at
+    end
+  end
+
+  def end_time
+    if params[:to_time].present?
+      Time.at(params[:to_time].to_i).to_datetime
+    else
+      video.ended_at
+    end
   end
 end
