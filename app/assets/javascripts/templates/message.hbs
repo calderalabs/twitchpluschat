@@ -1,0 +1,7 @@
+<article class="message">
+  <span class="user-id">{{userId}}</span>
+
+  {{#each parts}}
+    {{view "messagePart" controller=this}}
+  {{/each}}
+</article>

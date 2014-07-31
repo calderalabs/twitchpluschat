@@ -1,0 +1,16 @@
+.chat {
+  ul {
+    padding-left: 0;
+    list-style-type: none;
+  }
+
+  .message {
+    .user-id {
+      font-weight: bold;
+
+      &:after {
+        content: ': '
+      }
+    }
+  }
+}

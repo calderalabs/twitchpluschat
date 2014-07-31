@@ -1,0 +1,17 @@
+#= require jquery
+#= require handlebars
+#= require ember
+#= require ember-data
+#= require swfobject
+#= require twitchpluschat
+#= require router
+#= require_tree ./templates
+#= require_tree ./initializers
+#= require transforms
+#= require stores
+#= require serializers
+#= require adapters
+#= require models
+#= require controllers
+#= require routes
+#= require views
