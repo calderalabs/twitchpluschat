@@ -41,16 +41,17 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
       videoId: @get('video.id'),
       fromTime: absoluteCurrentTime
     ).then (currentBatch) =>
-      allMessages = @store.all('message')
-      @set('content', allMessages)
-
+      allMessages = @set('content', @store.all('message'))
       currentMessages = @get('currentMessages')
       visibleMessages = @get('visibleMessages')
 
       @beginPropertyChanges()
 
       allMessages.forEach (message) ->
-        if currentBatch.indexOf(message) == -1 && visibleMessages.indexOf(message) == -1
+        id = message.get('id')
+
+        if currentBatch.mapBy('id').indexOf(id) == -1 &&
+           visibleMessages.mapBy('id').indexOf(id) == -1
           message.unloadRecord()
 
       currentMessages.forEach (message) ->
