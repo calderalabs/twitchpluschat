@@ -1,3 +1,3 @@
 class EmoticonSerializer < ActiveModel::Serializer
-  attributes :id, :width, :height, :url
+  attributes :regexp, :width, :height, :url
 end

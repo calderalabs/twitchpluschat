@@ -2,21 +2,38 @@ class LoggingBot
   class Plugin
     include Cinch::Plugin
 
-    listen_to :connect, method: :on_connect
-    listen_to :channel, method: :on_message
+    listen_to :connect, method: :initialize_client
+    listen_to :channel, method: :enqueue_message
+    timer 60, method: :flush_queue, threaded: false
 
     private
 
-    def on_connect(m)
+    attr_reader :message_queue
+
+    def initialize_client(m)
+      @message_queue = []
+
       bot.irc.send('TWITCHCLIENT 3')
+
+      at_exit do
+        flush_queue
+      end
     end
 
-    def on_message(m)
-      if m.user.nick == 'jtv'
-        update_user_data(m)
-      else
-        log_message(m)
+    def enqueue_message(m)
+      message_queue << m
+    end
+
+    def flush_queue
+      message_queue.each do |m|
+        if m.user.nick == 'jtv'
+          update_user_data(m)
+        else
+          log_message(m)
+        end
       end
+
+      message_queue.clear
     end
 
     def update_user_data(m)
@@ -32,6 +49,7 @@ class LoggingBot
 
     def log_message(m)
       Message.create(
+        created_at: m.time,
         channel_id: m.channel.name[1..-1],
         user: User.find_or_create_by(name: m.user.nick),
         text: m.message

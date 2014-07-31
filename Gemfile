@@ -1,3 +1,5 @@
+ruby '2.1.2'
+
 source 'https://rubygems.org'
 source 'https://rails-assets.org'
 
@@ -12,6 +14,7 @@ gem 'jquery-rails'
 gem 'oj'
 gem 'pg'
 gem 'pry', group: :development
+gem 'puma'
 gem 'rails'
 gem 'rails_12factor', group: :production
 gem 'sass-rails'

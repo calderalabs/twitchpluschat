@@ -6,9 +6,9 @@ class EmoticonSetsController < ApplicationController
       sets = EmoticonSet.all
 
       ActiveModel::ArraySerializer.new(
-            sets,
-            each_serializer: EmoticonSetSerializer,
-            root: :emoticon_sets
+        sets,
+        each_serializer: EmoticonSetSerializer,
+        root: :emoticon_sets
       ).to_json
     end
 
