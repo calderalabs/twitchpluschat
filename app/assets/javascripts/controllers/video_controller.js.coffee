@@ -18,3 +18,7 @@ Twitchpluschat.VideoController = Ember.ObjectController.extend Ember.Evented,
     else
       null
   ).property('currentTime', 'recordedAt')
+
+  channelUrl: (->
+    "http://www.twitch.tv/#{@get('channelId')}"
+  ).property('channelId')

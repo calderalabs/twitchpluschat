@@ -1,1 +1,26 @@
+$include-html-classes: false;
+$include-html-global-classes: true;
+$row-width: 100%;
+$anchor-font-color: #6441a5;
+$body-font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+
+@import "normalize";
+@import "foundation";
 @import "chat";
+@import "video";
+
+main {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  a {
+    text-decoration: none;
+
+    &:visited {
+      color: $anchor-font-color;
+    }
+  }
+}

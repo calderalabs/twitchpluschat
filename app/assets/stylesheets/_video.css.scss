@@ -1,0 +1,11 @@
+.video {
+  position: relative;
+  overflow: auto;
+  margin-right: rem-calc(340);
+  padding: rem-calc(20);
+
+  h1 {
+    font-size: rem-calc(26);
+    margin-top: 0;
+  }
+}
