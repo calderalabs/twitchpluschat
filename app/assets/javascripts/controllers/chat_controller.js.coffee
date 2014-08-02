@@ -28,18 +28,16 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
       @set('_parentController', value)
 
       @get('parentController').on 'currentTimeDidChange', =>
-        @findMessages()
+        @findMessagesAtCurrentTime() if @get('video.absoluteCurrentTime')?
 
     @get('_parentController')
   ).property()
 
-  findMessages: ->
-    absoluteCurrentTime = @get('video.absoluteCurrentTime')
-    return unless absoluteCurrentTime?
-
+  findMessagesAtCurrentTime: ->
     @store.findMessages(
       videoId: @get('video.id'),
-      fromTime: absoluteCurrentTime
+      atTime: @get('video.absoluteCurrentTime'),
+      minTime: @get('video.recordedAt')
     ).then (currentBatch) =>
       allMessages = @set('content', @store.all('message'))
       currentMessages = @get('currentMessages')

@@ -1,28 +1,42 @@
 Twitchpluschat.ApplicationStore = DS.Store.extend
-  TimeInterval: 20
+  MessagesTimeInterval: 60
 
-  lastFromTime: null
+  lastMessagesFromTime: null
+  lastMessagesToTime: null
   lastMessages: null
 
   findMessages: (params) ->
-    TimeInterval = @get('TimeInterval')
+    TimeInterval = @get('MessagesTimeInterval') / 2
 
-    if params.fromTime?
-      fromTime = new Date(params.fromTime)
-      fromTime.setSeconds(fromTime.getSeconds() - (fromTime.getSeconds() % TimeInterval))
-      lastFromTime = @get('lastFromTime')
+    atTime = params.atTime ? new Date()
+    minTime = params.minTime ? params.atTime
+    lastMessagesFromTime = @get('lastMessagesFromTime')
+    lastMessagesToTime = @get('lastMessagesToTime')
+    lastMessages = @get('lastMessages')
+    isCached = lastMessages? && atTime > lastMessagesFromTime && atTime < lastMessagesToTime
 
-      return @get('lastMessages') if lastFromTime? && fromTime.getTime() == lastFromTime.getTime()
-      @set('lastFromTime', fromTime)
+    unless isCached
+      fromTime = new Date(atTime)
+      fromTime.setSeconds(fromTime.getSeconds() - TimeInterval)
+      fromTime = new Date(Math.max(minTime, fromTime))
 
-      toTime = new Date(fromTime)
+      toTime = new Date(atTime)
       toTime.setSeconds(toTime.getSeconds() + TimeInterval)
+      toTime = new Date(Math.max(minTime, toTime))
 
-      query =
+      if lastMessages?
+        if toTime > lastMessagesToTime
+          fromTime = new Date(Math.max(fromTime, lastMessagesToTime))
+        else if fromTime < lastMessagesFromTime
+          toTime = new Date(Math.min(toTime, lastMessagesFromTime))
+
+      @set('lastMessagesFromTime', fromTime)
+      @set('lastMessagesToTime', toTime)
+
+      @set('lastMessages', @find('message',
         from_time: fromTime.getTime() / 1000
         to_time: toTime.getTime() / 1000
         video_id: params.videoId
+      ))
 
-    messages = @find('message', query)
-    @set('lastMessages', messages)
-    messages
+    @get('lastMessages')
