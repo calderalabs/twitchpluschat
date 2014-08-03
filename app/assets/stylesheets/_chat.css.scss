@@ -1,0 +1,32 @@
+.chat {
+  $background-color: #f2f2f2;
+
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: rem-calc(340);
+  font-size: rem-calc(13);
+  overflow: auto;
+  background-color: $background-color;
+  border-left: 1px solid darken($background-color, 20%);
+  padding: 0 rem-calc(15);
+
+  ul {
+    padding-left: 0;
+    list-style-type: none;
+  }
+
+  .message {
+    margin-bottom: rem-calc(7);
+
+    .user-name {
+      font-weight: bold;
+      text-transform: capitalize;
+
+      &:after {
+        content: ': '
+      }
+    }
+  }
+}

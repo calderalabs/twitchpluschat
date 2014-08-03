@@ -4,6 +4,7 @@
 #= require ember-data
 #= require swfobject
 #= require twitchpluschat
+#= require time_interval
 #= require router
 #= require_tree ./templates
 #= require_tree ./initializers

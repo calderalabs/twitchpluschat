@@ -8,7 +8,7 @@ class MessagesController < ApplicationController
       messages = Message.where(
         created_at: (start_time..end_time),
         channel_id: video.channel_id
-      ).includes(:user)
+      )
     end
 
     respond_with messages
@@ -22,7 +22,7 @@ class MessagesController < ApplicationController
 
   def start_time
     if params[:from_time].present?
-      Time.at(params[:from_time].to_i).to_datetime
+      Time.zone.at(params[:from_time].to_i)
     else
       video.recorded_at
     end
@@ -30,7 +30,7 @@ class MessagesController < ApplicationController
 
   def end_time
     if params[:to_time].present?
-      Time.at(params[:to_time].to_i).to_datetime
+      Time.zone.at(params[:to_time].to_i)
     else
       video.ended_at
     end

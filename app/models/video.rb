@@ -1,6 +1,10 @@
 class Video < TwitchModel
   cached_resource
 
+  def recorded_at
+    super.in_time_zone('UTC')
+  end
+
   def channel_id
     channel.name
   end
