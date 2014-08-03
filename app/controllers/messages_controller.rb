@@ -8,7 +8,7 @@ class MessagesController < ApplicationController
       messages = Message.where(
         created_at: (start_time..end_time),
         channel_id: video.channel_id
-      ).includes(:user)
+      )
     end
 
     respond_with messages
