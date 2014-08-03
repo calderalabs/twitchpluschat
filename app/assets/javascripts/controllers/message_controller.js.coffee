@@ -58,5 +58,10 @@ Twitchpluschat.MessageController = Ember.ObjectController.extend
   ).property('text', 'matchingEmoticons', 'textPartClass', 'emoticonPartClass')
 
   userNameStyle: (->
-    "color: #{@get('color')}"
+    color = @get('color')
+
+    if color?
+      "color: #{color}"
+    else
+      null
   ).property('color')
