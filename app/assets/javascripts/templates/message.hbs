@@ -1,5 +1,5 @@
 <article class="message">
-  <span class="user-id">{{userId}}</span>
+  <span class="user-name" {{bind-attr style=userNameStyle}}>{{userName}}</span>
 
   {{#each parts}}
     {{view "messagePart" controller=this}}

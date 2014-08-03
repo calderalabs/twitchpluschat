@@ -17,9 +17,11 @@ ActiveRecord::Schema.define(version: 20140726161807) do
   enable_extension "plpgsql"
 
   create_table "messages", force: true do |t|
-    t.string   "text"
+    t.text     "text"
     t.string   "channel_id"
-    t.integer  "user_id"
+    t.string   "user_name"
+    t.string   "emoticon_set_ids", default: [], array: true
+    t.string   "color"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -27,6 +29,7 @@ ActiveRecord::Schema.define(version: 20140726161807) do
   create_table "users", force: true do |t|
     t.string   "name"
     t.string   "emoticon_set_ids", default: [], array: true
+    t.string   "color"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

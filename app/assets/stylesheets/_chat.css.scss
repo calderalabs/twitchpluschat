@@ -20,8 +20,9 @@
   .message {
     margin-bottom: rem-calc(7);
 
-    .user-id {
+    .user-name {
       font-weight: bold;
+      text-transform: capitalize;
 
       &:after {
         content: ': '

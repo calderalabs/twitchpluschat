@@ -1,4 +1,4 @@
-class LoggingBot
+module LoggingBot
   class Plugin
     include Cinch::Plugin
 
@@ -8,10 +8,10 @@ class LoggingBot
 
     private
 
-    attr_reader :message_queue
+    attr_reader :queue, :users
 
-    def initialize_client(m)
-      @message_queue = []
+    def initialize_client(*args)
+      @queue = LoggingBot::Queue.new
 
       bot.irc.send('TWITCHCLIENT 3')
 
@@ -21,39 +21,11 @@ class LoggingBot
     end
 
     def enqueue_message(m)
-      message_queue << m
+      queue.push(m)
     end
 
     def flush_queue
-      message_queue.each do |m|
-        if m.user.nick == 'jtv'
-          update_user_data(m)
-        else
-          log_message(m)
-        end
-      end
-
-      message_queue.clear
-    end
-
-    def update_user_data(m)
-      m.message.scan(/(\S+) (\S+) (.+)/) do |event, user_id, value|
-        case event
-        when 'EMOTESET'
-          emoticon_set_ids = JSON.parse(value).map(&:to_s)
-          user = User.find_or_create_by(name: user_id)
-          user.update_attributes(emoticon_set_ids: emoticon_set_ids)
-        end
-      end
-    end
-
-    def log_message(m)
-      Message.create(
-        created_at: m.time,
-        channel_id: m.channel.name[1..-1],
-        user: User.find_or_create_by(name: m.user.nick),
-        text: m.message
-      )
+      queue.flush
     end
   end
 end
