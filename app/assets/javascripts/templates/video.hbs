@@ -1,9 +1,7 @@
 <section class="video">
   <h1>{{title}} on <a {{bind-attr href=channelUrl}}>{{channelId}}</a></h1>
 
-  <section class="player">
-    {{view "player"}}
-  </section>
+  {{view "player"}}
 </section>
 
 {{render "chat" messages}}

@@ -1,7 +1,7 @@
 <section class="chat">
   <ul>
     {{#each currentMessages itemController="message"}}
-      <li>{{partial "message"}}</li>
+      <li>{{view "message" chatView=view}}</li>
     {{/each}}
   </ul>
 </section>
