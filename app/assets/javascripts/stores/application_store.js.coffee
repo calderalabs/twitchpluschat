@@ -1,41 +1,28 @@
 Twitchpluschat.ApplicationStore = DS.Store.extend
-  MessagesTimeInterval: 60
+  BatchSeconds: 60
 
-  lastMessagesFromTime: null
-  lastMessagesToTime: null
   lastMessages: null
+  lastInterval: null
 
   findMessages: (params) ->
-    TimeInterval = @get('MessagesTimeInterval') / 2
+    interval = Twitchpluschat.TimeInterval.interval(
+      center: params.atTime
+      min: params.minTime
+      seconds: @get('BatchSeconds')
+    )
 
-    atTime = params.atTime ? new Date()
-    minTime = params.minTime ? params.atTime
-    lastMessagesFromTime = @get('lastMessagesFromTime')
-    lastMessagesToTime = @get('lastMessagesToTime')
-    lastMessages = @get('lastMessages')
-    isCached = lastMessages? && atTime > lastMessagesFromTime && atTime < lastMessagesToTime
+    lastInterval = @get('lastInterval')
+    isCached = lastInterval? && lastInterval.hasDate(interval.get('center'))
 
     unless isCached
-      fromTime = new Date(atTime)
-      fromTime.setSeconds(fromTime.getSeconds() - TimeInterval)
-      fromTime = new Date(Math.max(minTime, fromTime))
+      if lastInterval?
+        interval.subtract(lastInterval)
 
-      toTime = new Date(atTime)
-      toTime.setSeconds(toTime.getSeconds() + TimeInterval)
-      toTime = new Date(Math.max(minTime, toTime))
-
-      if lastMessages?
-        if toTime > lastMessagesToTime
-          fromTime = new Date(Math.max(fromTime, lastMessagesToTime))
-        else if fromTime < lastMessagesFromTime
-          toTime = new Date(Math.min(toTime, lastMessagesFromTime))
-
-      @set('lastMessagesFromTime', fromTime)
-      @set('lastMessagesToTime', toTime)
+      @set('lastInterval', interval)
 
       @set('lastMessages', @find('message',
-        from_time: fromTime.getTime() / 1000
-        to_time: toTime.getTime() / 1000
+        from_time: interval.get('from').getTime() / 1000
+        to_time: interval.get('to').getTime() / 1000
         video_id: params.videoId
       ))
 
