@@ -27,3 +27,4 @@ gem 'uglifier'
 
 gem 'rails-assets-ember', '1.7.0.beta.4'
 gem 'rails-assets-ember-data', '1.0.0.beta.8'
+gem 'rails-assets-underscore'

@@ -14,11 +14,14 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
   pastMessages: (->
     absoluteCurrentTime = @get('video.absoluteCurrentTime')
 
+    pastMessages = []
+
     if absoluteCurrentTime?
-      @get('sortedMessages').filter (message) =>
-        message.get('createdAt') <= absoluteCurrentTime
-    else
-      []
+      for message in @get('sortedMessages')
+        if message.get('createdAt') <= absoluteCurrentTime
+          pastMessages.push(message)
+
+    pastMessages
   ).property('video.absoluteCurrentTime')
 
   visibleMessages: (->
