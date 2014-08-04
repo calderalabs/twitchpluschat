@@ -22,7 +22,7 @@ Twitchpluschat.PlayerView = Ember.View.extend
       this, (->
         @updateVideoTime()
         @startUpdatingVideoTime()
-      ), 100
+      ), 500
     )
 
   didInsertElement: ->

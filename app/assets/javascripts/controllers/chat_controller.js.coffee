@@ -1,27 +1,29 @@
 Twitchpluschat.ChatController = Ember.ArrayController.extend
   MaxVisibleMessages: 50
 
-  _parentController: null
-
   needs: ['video']
   video: Ember.computed.alias('controllers.video')
-  messagesSorting: ['createdAt']
-  sortedMessages: Ember.computed.sort('pastMessages', 'messagesSorting')
+  lastBatch: null
   currentMessages: []
+  _parentController: null
 
-  pastMessages: ((message) ->
+  sortedMessages: (->
+    @get('content').sortBy('createdAt')
+  ).property('content')
+
+  pastMessages: (->
     absoluteCurrentTime = @get('video.absoluteCurrentTime')
 
     if absoluteCurrentTime?
-      @filter (message) ->
+      @get('sortedMessages').filter (message) =>
         message.get('createdAt') <= absoluteCurrentTime
     else
       []
-  ).property('@this.@each.createdAt', 'video.absoluteCurrentTime')
+  ).property('video.absoluteCurrentTime')
 
   visibleMessages: (->
-    @get('sortedMessages').slice(-@get('MaxVisibleMessages') - 1)
-  ).property('sortedMessages')
+    @get('pastMessages').slice(-@get('MaxVisibleMessages'))
+  ).property('video.absoluteCurrentTime')
 
   parentController: ((key, value) ->
     if arguments.length > 1
@@ -39,25 +41,26 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
       atTime: @get('video.absoluteCurrentTime'),
       minTime: @get('video.recordedAt')
     ).then (currentBatch) =>
-      allMessages = @set('content', @store.all('message'))
-      currentMessages = @get('currentMessages')
-      visibleMessages = @get('visibleMessages')
+      if currentBatch != @get('lastBatch')
+        @set('content', @store.all('message').toArray())
+        @set('lastBatch', currentBatch)
 
-      @beginPropertyChanges()
+      @updateMessages()
 
-      allMessages.forEach (message) ->
-        id = message.get('id')
+  updateMessages: ->
+    allMessages = @get('content')
+    currentMessages = @get('currentMessages')
+    visibleMessages = @get('visibleMessages')
+    lastBatch = @get('lastBatch')
 
-        if currentBatch.mapBy('id').indexOf(id) == -1 &&
-           visibleMessages.mapBy('id').indexOf(id) == -1
-          message.unloadRecord()
+    @beginPropertyChanges()
 
-      currentMessages.forEach (message) ->
-        if visibleMessages.indexOf(message) == -1
-          currentMessages.removeObject(message)
+    currentMessages.forEach (message) ->
+      if visibleMessages.indexOf(message) == -1
+        currentMessages.removeObject(message)
 
-      visibleMessages.forEach (message, index) ->
-        if currentMessages.indexOf(message) == -1
-          currentMessages.insertAt(index, message)
+    visibleMessages.forEach (message, index) ->
+      if currentMessages.indexOf(message) == -1
+        currentMessages.insertAt(index, message)
 
-      @endPropertyChanges()
+    @endPropertyChanges()
