@@ -4,6 +4,7 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
   needs: ['video']
   video: Ember.computed.alias('controllers.video')
   lastBatch: null
+  lastVisibleMessages: null
   currentMessages: []
   _parentController: null
 
@@ -51,19 +52,31 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
       @updateMessages()
 
   updateMessages: ->
+    visibleMessages = @get('visibleMessages')
+    return if visibleMessages == @get('lastVisibleMessages')
+    @set('lastVisibleMessages', visibleMessages)
+
     allMessages = @get('content')
     currentMessages = @get('currentMessages')
-    visibleMessages = @get('visibleMessages')
-    lastBatch = @get('lastBatch')
+    currentMessageIds = currentMessages.mapBy('id')
+    visibleMessagesIds = visibleMessages.mapBy('id')
+    lastBatchIds = @get('lastBatch').mapBy('id')
 
     @beginPropertyChanges()
 
-    currentMessages.forEach (message) ->
-      if visibleMessages.indexOf(message) == -1
-        currentMessages.removeObject(message)
+    allMessages.forEach (message) ->
+      if lastBatchIds.indexOf(message.get('id')) == -1 && visibleMessagesIds.indexOf(message.get('id')) == -1
+        message.unloadRecord()
+
+    currentMessages.forEach (message, index) ->
+      if visibleMessagesIds.indexOf(message.get('id')) == -1
+        currentMessages.removeAt(index)
 
     visibleMessages.forEach (message, index) ->
-      if currentMessages.indexOf(message) == -1
-        currentMessages.insertAt(index, message)
+      if currentMessageIds.indexOf(message.get('id')) == -1
+        if message.get('createdAt') >= currentMessages.get('lastObject.createdAt')
+          currentMessages.pushObject(message)
+        else
+          currentMessages.insertAt(0, message)
 
     @endPropertyChanges()
