@@ -7,7 +7,7 @@ Twitchpluschat.VideoController = Ember.ObjectController.extend Ember.Evented,
 
       if value != current
         @set('_currentTime', value)
-        @trigger('currentTimeDidChange', value, current)
+        @trigger('currentTimeDidChange')
 
     @get('_currentTime')
   ).property()

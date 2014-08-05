@@ -18,10 +18,9 @@ Twitchpluschat.MessageController = Ember.ObjectController.extend
       set = emoticonSets[setId]
       userSets.push(set) if set?
 
-    userEmoticons = _(userSets).flatten(true)
     matchingEmoticons = []
 
-    for emoticon in userEmoticons
+    for emoticon in _(userSets).flatten(true)
       if text.match(new RegExp(emoticon.regexp, 'g'))
         matchingEmoticons.push(emoticon)
 
