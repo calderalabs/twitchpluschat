@@ -5,6 +5,7 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
   video: Ember.computed.alias('controllers.video')
   currentMessages: []
   currentTime: null
+  currentPromise: null
 
   videoControllerDidChange: (->
     controller = @get('video')
@@ -19,12 +20,17 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
   ).observes('video').on('init')
 
   findMessagesAtCurrentTime: (previousTime, currentTime) ->
-    @store.findMessages(
+    promise = @store.findMessages(
       videoId: @get('video.id'),
       atTime: currentTime,
       minTime: @get('video.recordedAt')
-    ).then (batch) =>
-      @updateCurrentMessages(batch, previousTime, currentTime)
+    )
+
+    @set('currentPromise', promise)
+
+    promise.then (batch) =>
+      if promise == @get('currentPromise')
+        @updateCurrentMessages(batch, previousTime, currentTime)
 
   updateCurrentMessages: (batch, previousTime, currentTime) ->
     MaxVisibleMessages = @get('MaxVisibleMessages')
