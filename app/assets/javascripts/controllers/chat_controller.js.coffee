@@ -39,11 +39,11 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
     @beginPropertyChanges()
 
     if currentTime > previousTime
-      lastBatchIndex = batch.indexOf(message)
+      lastBatchIndex = batch.mapBy('id').indexOf(currentMessages.get('lastObject.id'))
       lastBatchIndex = 0 if lastBatchIndex == -1
 
-      for message, index in batch[lastBatchIndex..-1]
-        if message.get('createdAt') <= currentTime && currentMessages.indexOf(message) == -1
+      for message in batch[lastBatchIndex..-1]
+        if message.get('createdAt') <= currentTime && !currentMessages.findBy('id', message.get('id'))?
           currentMessages.pushObject(message)
     else
       while (message = currentMessages.get('lastObject'))? && message.get('createdAt') > currentTime
