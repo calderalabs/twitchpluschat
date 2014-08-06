@@ -33,23 +33,37 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
         @updateCurrentMessages(batch, previousTime, currentTime)
 
   updateCurrentMessages: (batch, previousTime, currentTime) ->
-    MaxVisibleMessages = @get('MaxVisibleMessages')
     currentMessages = @get('currentMessages')
-
     @beginPropertyChanges()
 
     if currentTime > previousTime
-      lastBatchIndex = batch.mapBy('id').indexOf(currentMessages.get('lastObject.id'))
-      lastBatchIndex = 0 if lastBatchIndex == -1
-
-      for message in batch[lastBatchIndex..-1]
-        if message.get('createdAt') <= currentTime && !currentMessages.findBy('id', message.get('id'))?
-          currentMessages.pushObject(message)
+      @addPastMessagesFromBatch(currentMessages, batch, currentTime)
     else
-      while (message = currentMessages.get('lastObject'))? && message.get('createdAt') > currentTime
-        currentMessages.popObject()
+      @removeFutureMessages(currentMessages, currentTime)
 
-    while currentMessages.get('length') > MaxVisibleMessages
-      currentMessages.shiftObject()
-
+    @removeExceedingMessages(currentMessages)
     @endPropertyChanges()
+
+  addPastMessagesFromBatch: (messages, batch, time) ->
+    lastBatchIndex = _(batch.mapBy('id')).indexOf(messages.get('lastObject.id'), true)
+    startingIndex = if lastBatchIndex == -1 then 0 else lastBatchIndex
+
+    for message in batch[startingIndex..-1]
+      isPast = message.get('createdAt') <= time
+      isAlreadyAdded = messages.findBy('id', message.get('id'))?
+
+      if isPast && !isAlreadyAdded
+        messages.pushObject(message)
+
+  removeFutureMessages: (messages, time) ->
+    message = messages.get('lastObject')
+
+    while message? && message.get('createdAt') > time
+      messages.popObject()
+      message = messages.get('lastObject')
+
+  removeExceedingMessages: (messages) ->
+    MaxVisibleMessages = @get('MaxVisibleMessages')
+
+    while messages.get('length') > MaxVisibleMessages
+      messages.shiftObject()
