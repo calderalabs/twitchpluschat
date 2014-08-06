@@ -15,13 +15,10 @@ Twitchpluschat.VideoController = Ember.ObjectController.extend Ember.Evented,
   absoluteCurrentTime: (->
     recordedAt = @get('recordedAt')
     currentTime = @get('currentTime')
+    delay = @get('channel.delay')
 
     if currentTime?
-      new Date(recordedAt.getTime() + currentTime * 1000)
+      new Date(recordedAt.getTime() + (currentTime + delay) * 1000)
     else
       null
   ).property('currentTime', 'recordedAt')
-
-  channelUrl: (->
-    "http://www.twitch.tv/#{@get('channelId')}"
-  ).property('channelId')

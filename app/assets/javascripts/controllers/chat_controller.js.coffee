@@ -45,7 +45,11 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
     @endPropertyChanges()
 
   addPastMessagesFromBatch: (messages, batch, time) ->
-    lastBatchIndex = _(batch.mapBy('id')).indexOf(messages.get('lastObject.id'), true)
+    lastBatchIndex = _(batch.mapBy('id')).indexOf(
+      messages.get('lastObject.id'),
+      true # isSorted
+    )
+
     startingIndex = if lastBatchIndex == -1 then 0 else lastBatchIndex
 
     for message in batch[startingIndex..-1]

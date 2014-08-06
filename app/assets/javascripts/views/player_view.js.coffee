@@ -47,7 +47,7 @@ Twitchpluschat.PlayerView = Ember.View.extend
       {
         eventsCallback: @get('eventHandlerName')
         embed: 1
-        channel: @get('controller.channelId')
+        channel: @get('controller.channel.id')
         archive_id: @get('controller.id')
         auto_play: true
       },
