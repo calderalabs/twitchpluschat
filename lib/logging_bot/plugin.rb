@@ -4,7 +4,7 @@ module LoggingBot
 
     listen_to :connect, method: :initialize_client
     listen_to :channel, method: :enqueue_message
-    timer 60, method: :flush_queue, threaded: false
+    timer 30, method: :flush_queue, threaded: false
 
     private
 
