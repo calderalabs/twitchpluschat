@@ -3,4 +3,4 @@ Twitchpluschat.RawTransform = DS.Transform.extend
     serialized
 
   serialize: (deserialized) ->
-    serialized
+    deserialized

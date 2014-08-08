@@ -1,4 +1,4 @@
 Twitchpluschat.Video = DS.Model.extend
-  channelId: DS.attr('string')
+  channel: DS.belongsTo('channel')
   recordedAt: DS.attr('date')
   title: DS.attr('string')

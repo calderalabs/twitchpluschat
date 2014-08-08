@@ -1,3 +1,5 @@
 class VideoSerializer < ActiveModel::Serializer
-  attributes :id, :title, :recorded_at, :channel_id
+  embed :ids, include: true
+  attributes :id, :title, :recorded_at
+  has_one :channel
 end

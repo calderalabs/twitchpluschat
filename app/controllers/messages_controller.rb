@@ -2,16 +2,19 @@ class MessagesController < ApplicationController
   respond_to :json
 
   def index
-    messages = Message.all
+    batches = MessageBatch.all
 
     if params[:video_id].present?
-      messages = Message.where(
-        created_at: (start_time..end_time),
-        channel_id: video.channel_id
+      batches = MessageBatch.where(
+        "(started_at >= :start_time AND started_at <= :end_time) OR " +
+        "(ended_at >= :start_time AND ended_at <= :end_time)",
+        start_time: start_time, end_time: end_time
       )
+
+      batches = batches.where(channel_id: video.channel_id)
     end
 
-    respond_with messages
+    respond_with batches.flat_map(&:messages)
   end
 
   private

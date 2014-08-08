@@ -1,2 +1,2 @@
 web: bundle exec puma -p $PORT
-worker: bundle exec thor tcp:bot
+worker: bundle exec thor tpc:bot

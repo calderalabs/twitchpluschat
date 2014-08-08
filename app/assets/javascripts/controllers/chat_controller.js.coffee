@@ -1,63 +1,73 @@
 Twitchpluschat.ChatController = Ember.ArrayController.extend
   MaxVisibleMessages: 50
 
-  _parentController: null
-
   needs: ['video']
   video: Ember.computed.alias('controllers.video')
-  messagesSorting: ['createdAt']
-  sortedMessages: Ember.computed.sort('pastMessages', 'messagesSorting')
   currentMessages: []
+  currentTime: null
+  currentPromise: null
 
-  pastMessages: ((message) ->
-    absoluteCurrentTime = @get('video.absoluteCurrentTime')
+  videoControllerDidChange: (->
+    controller = @get('video')
 
-    if absoluteCurrentTime?
-      @filter (message) ->
-        message.get('createdAt') <= absoluteCurrentTime
-    else
-      []
-  ).property('@this.@each.createdAt', 'video.absoluteCurrentTime')
+    if controller?
+      controller.on 'currentTimeDidChange', =>
+        previousTime = @get('currentTime') ? 0
+        currentTime = controller.get('absoluteCurrentTime')
+        @set('currentTime', currentTime)
 
-  visibleMessages: (->
-    @get('sortedMessages').slice(-@get('MaxVisibleMessages') - 1)
-  ).property('sortedMessages')
+        @findMessagesAtCurrentTime(previousTime, currentTime) if currentTime?
+  ).observes('video').on('init')
 
-  parentController: ((key, value) ->
-    if arguments.length > 1
-      @set('_parentController', value)
-
-      @get('parentController').on 'currentTimeDidChange', =>
-        @findMessagesAtCurrentTime() if @get('video.absoluteCurrentTime')?
-
-    @get('_parentController')
-  ).property()
-
-  findMessagesAtCurrentTime: ->
-    @store.findMessages(
+  findMessagesAtCurrentTime: (previousTime, currentTime) ->
+    promise = @store.findMessages(
       videoId: @get('video.id'),
-      atTime: @get('video.absoluteCurrentTime'),
+      atTime: currentTime,
       minTime: @get('video.recordedAt')
-    ).then (currentBatch) =>
-      allMessages = @set('content', @store.all('message'))
-      currentMessages = @get('currentMessages')
-      visibleMessages = @get('visibleMessages')
+    )
 
-      @beginPropertyChanges()
+    @set('currentPromise', promise)
 
-      allMessages.forEach (message) ->
-        id = message.get('id')
+    promise.then (batch) =>
+      if promise == @get('currentPromise')
+        @updateCurrentMessages(batch, previousTime, currentTime)
 
-        if currentBatch.mapBy('id').indexOf(id) == -1 &&
-           visibleMessages.mapBy('id').indexOf(id) == -1
-          message.unloadRecord()
+  updateCurrentMessages: (batch, previousTime, currentTime) ->
+    currentMessages = @get('currentMessages')
+    @beginPropertyChanges()
 
-      currentMessages.forEach (message) ->
-        if visibleMessages.indexOf(message) == -1
-          currentMessages.removeObject(message)
+    if currentTime > previousTime
+      @addPastMessagesFromBatch(currentMessages, batch, currentTime)
+    else
+      @removeFutureMessages(currentMessages, currentTime)
 
-      visibleMessages.forEach (message, index) ->
-        if currentMessages.indexOf(message) == -1
-          currentMessages.insertAt(index, message)
+    @removeExceedingMessages(currentMessages)
+    @endPropertyChanges()
 
-      @endPropertyChanges()
+  addPastMessagesFromBatch: (messages, batch, time) ->
+    lastBatchIndex = _(batch.mapBy('id')).indexOf(
+      messages.get('lastObject.id'),
+      true # isSorted
+    )
+
+    startingIndex = if lastBatchIndex == -1 then 0 else lastBatchIndex
+
+    for message in batch[startingIndex..-1]
+      isPast = message.get('createdAt') <= time
+      isAlreadyAdded = messages.findBy('id', message.get('id'))?
+
+      if isPast && !isAlreadyAdded
+        messages.pushObject(message)
+
+  removeFutureMessages: (messages, time) ->
+    message = messages.get('lastObject')
+
+    while message? && message.get('createdAt') > time
+      messages.popObject()
+      message = messages.get('lastObject')
+
+  removeExceedingMessages: (messages) ->
+    MaxVisibleMessages = @get('MaxVisibleMessages')
+
+    while messages.get('length') > MaxVisibleMessages
+      messages.shiftObject()
