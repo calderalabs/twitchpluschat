@@ -4,7 +4,7 @@ module LoggingBot
       include BaseLogger
 
       def save
-        message_batch.messages << {
+        message_batch.push({
           sent_at: raw_message.time.in_time_zone('UTC').as_json,
           channel_id: message_batch.channel_id,
           user_name: user.name,
@@ -12,7 +12,7 @@ module LoggingBot
           color: user.color,
           text: raw_message.message,
           raw_text: raw_message.raw
-        }
+        }.stringify_keys)
 
         true
       end
