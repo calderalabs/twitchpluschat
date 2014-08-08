@@ -7,7 +7,11 @@ class MessageBatch < ActiveRecord::Base
   end
 
   def update_interval
-    self.started_at = messages.first['sent_at']
-    self.ended_at = messages.last['sent_at']
+    if messages.present?
+      self.started_at = messages.first['sent_at']
+      self.ended_at = messages.last['sent_at']
+    else
+      false
+    end
   end
 end
