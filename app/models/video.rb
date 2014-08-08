@@ -6,7 +6,7 @@ class Video < TwitchModel
   end
 
   def channel
-    Channel.find(channel_attributes.name)
+    ::Channel.find(channel_attributes.name)
   end
 
   def channel_id
