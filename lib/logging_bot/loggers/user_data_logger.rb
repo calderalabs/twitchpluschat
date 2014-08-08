@@ -5,7 +5,7 @@ module LoggingBot
 
       def save
         if raw_message.user.nick == 'jtv'
-          parts = raw_message.message.match(/(\S+) (\S+) (.+)/)
+          parts = raw_message.message.match(/([A-Z]+) (\S+) (.+)?/)
 
           if parts.present?
             update_from_parts(*parts[1..-1])
