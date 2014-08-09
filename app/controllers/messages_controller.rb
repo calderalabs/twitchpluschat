@@ -5,7 +5,7 @@ class MessagesController < ApplicationController
     batches = MessageBatch.all
 
     if params[:video_id].present?
-      batches = MessageBatch.where(
+      batches = batches.where(
         "(started_at >= :start_time AND started_at <= :end_time) OR " +
         "(ended_at >= :start_time AND ended_at <= :end_time)",
         start_time: start_time, end_time: end_time

@@ -1,5 +1,7 @@
-<article class="message">
-  <span class="user-name" {{bind-attr style=userNameStyle}}>{{userName}}</span>
+<article {{bind-attr class=":message isBroadcasted:broadcasted"}}>
+  {{#if showUserName}}
+    <span class="user-name" {{bind-attr style=userNameStyle}}>{{userName}}</span>
+  {{/if}}
 
   {{#each parts}}
     {{view "messagePart" controller=this}}

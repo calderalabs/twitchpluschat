@@ -20,6 +20,10 @@
   .message {
     margin-bottom: rem-calc(7);
 
+    &.broadcasted {
+      color: #666666;
+    }
+
     .user-name {
       font-weight: bold;
       text-transform: capitalize;

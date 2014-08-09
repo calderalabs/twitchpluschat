@@ -67,3 +67,11 @@ Twitchpluschat.MessageController = Ember.ObjectController.extend
     else
       null
   ).property('color')
+
+  isBroadcasted: (->
+    @get('userName') == 'jtv'
+  ).property('userName')
+
+  showUserName: (->
+    !@get('isBroadcasted')
+  ).property('isBroadcasted')
