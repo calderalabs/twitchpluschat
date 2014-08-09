@@ -1,1 +1,1 @@
-Twitchpluschat.EmoticonSetsController = Ember.ArrayController.extend()
+Twitchpluschat.EmoticonSetsController = Ember.ObjectController.extend()

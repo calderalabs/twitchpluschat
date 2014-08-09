@@ -6,16 +6,11 @@ module LoggingBot
     end
 
     def flush
-      raw_messages.each do |raw_message|
-        if raw_message.user.nick == 'jtv'
-          update_user_data(raw_message)
-        else
-          log_message(raw_message)
-        end
+      raw_messages_by_channel.each do |channel_id, raw_messages|
+        log_message_batch(channel_id, raw_messages) if raw_messages.present?
       end
 
       raw_messages.clear
-
       users.values.each(&:save)
       users.clear
     end
@@ -24,39 +19,32 @@ module LoggingBot
       raw_messages.push(raw_message)
     end
 
+    def user(id)
+      users[id] ||= User.find_or_create_by(name: id)
+    end
+
     private
 
     attr_reader :raw_messages, :users
 
-    def update_user_data(raw_message)
-      raw_message.message.scan(/(\S+) (\S+) (.+)/) do |event, nick, value|
-        user = user(nick)
+    def raw_messages_by_channel
+      raw_messages.group_by { |m| m.channel.name[1..-1] }
+    end
 
-        case event
-        when 'EMOTESET'
-          emoticon_set_ids = JSON.parse(value).map(&:to_s)
-          user.emoticon_set_ids = emoticon_set_ids
-        when 'USERCOLOR'
-          user.color = value
+    def log_message_batch(channel_id, raw_messages)
+      message_batch = MessageBatch.new(channel_id: channel_id)
+
+      raw_messages.each do |raw_message|
+        Loggers::LOGGERS.each do |logger|
+          break if logger.new(
+            queue: self,
+            message_batch: message_batch,
+            raw_message: raw_message
+          ).save
         end
       end
-    end
 
-    def log_message(raw_message)
-      user = user(raw_message.user.nick)
-
-      Message.create(
-        created_at: raw_message.time,
-        channel_id: raw_message.channel.name[1..-1],
-        user_name: user.name,
-        emoticon_set_ids: user.emoticon_set_ids,
-        color: user.color,
-        text: raw_message.message
-      )
-    end
-
-    def user(id)
-      users[id] ||= User.find_or_create_by(name: id)
+      message_batch.save
     end
   end
 end

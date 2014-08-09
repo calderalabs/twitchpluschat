@@ -1,7 +1,7 @@
 Twitchpluschat.ApplicationStore = DS.Store.extend
   BatchSeconds: 60
 
-  lastMessages: null
+  lastBatch: null
   lastInterval: null
 
   findMessages: (params) ->
@@ -20,10 +20,10 @@ Twitchpluschat.ApplicationStore = DS.Store.extend
 
       @set('lastInterval', interval)
 
-      @set('lastMessages', @find('message',
+      @set('lastBatch', @find('message',
         from_time: interval.get('from').getTime() / 1000
         to_time: interval.get('to').getTime() / 1000
         video_id: params.videoId
-      ))
+      ).then (batch) -> batch.toArray().sortBy('sentAt'))
 
-    @get('lastMessages')
+    @get('lastBatch')

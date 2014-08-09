@@ -16,12 +16,11 @@ ActiveRecord::Schema.define(version: 20140726161807) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "messages", force: true do |t|
-    t.text     "text"
+  create_table "message_batches", force: true do |t|
     t.string   "channel_id"
-    t.string   "user_name"
-    t.string   "emoticon_set_ids", default: [], array: true
-    t.string   "color"
+    t.datetime "started_at"
+    t.datetime "ended_at"
+    t.json     "messages",   default: []
     t.datetime "created_at"
     t.datetime "updated_at"
   end
