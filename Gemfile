@@ -19,7 +19,6 @@ gem 'puma'
 gem 'rails'
 gem 'rails_12factor', group: :production
 gem 'sass-rails'
-gem 'sdoc', group: :doc
 gem 'spring', group: :development
 gem 'swfobject-rails'
 gem 'turbolinks'
