@@ -1,9 +1,13 @@
 class MessageBatch < ActiveRecord::Base
   before_validation :update_interval
 
+  def messages
+    super.map { |m| Message.new(m) }
+  end
+
   def push(message)
     messages_will_change!
-    messages << message
+    self[:messages] << message
   end
 
   def update_interval
