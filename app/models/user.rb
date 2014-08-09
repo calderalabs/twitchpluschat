@@ -3,6 +3,7 @@ class User
 
   def initialize(name)
     @name = name
+    @emoticon_set_ids = []
   end
 
   class << self
