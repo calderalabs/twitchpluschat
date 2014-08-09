@@ -36,6 +36,12 @@ Visit the page for your favourite VOD:
 Where `:channel_id` is the name of the channel e.g. `sing_sing` and `:video_id`
 is the id of the past broadcast e.g. `554034078`
 
+## TODO
+
+- Add some tests
+- Add support for channel badges (subscriber, turbo, etc.)
+- Add an index page to explain how it works
+
 ## Contributing
 
 If you'd like to help improve Twitch+Chat, clone the project with Git by
