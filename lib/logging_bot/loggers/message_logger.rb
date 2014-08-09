@@ -5,6 +5,7 @@ module LoggingBot
 
       def save
         message_batch.push({
+          id: SecureRandom.uuid,
           sent_at: raw_message.time.in_time_zone('UTC').as_json,
           channel_id: message_batch.channel_id,
           user_name: user.name,
@@ -20,7 +21,7 @@ module LoggingBot
       protected
 
       def user
-        queue.user(raw_message.user.nick)
+        @user ||= queue.user(raw_message.user.nick)
       end
     end
   end
