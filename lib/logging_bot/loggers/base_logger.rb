@@ -1,19 +1,19 @@
 module LoggingBot
   module Loggers
     module BaseLogger
-      def initialize(queue:, message_batch:, raw_message:)
-        @queue = queue
-        @message_batch = message_batch
-        @raw_message = raw_message
+      def initialize(channel_id)
+        @channel_id = channel_id
       end
 
-      def save
-        true
+      def push(raw_message)
+        false
       end
 
-      protected
+      def save; end
 
-      attr_reader :queue, :message_batch, :raw_message
+      private
+
+      attr_reader :channel_id
     end
   end
 end
