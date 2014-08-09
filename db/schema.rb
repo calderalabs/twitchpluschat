@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140726161807) do
+ActiveRecord::Schema.define(version: 20140726123040) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,14 +21,6 @@ ActiveRecord::Schema.define(version: 20140726161807) do
     t.datetime "started_at"
     t.datetime "ended_at"
     t.json     "messages",   default: []
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "users", force: true do |t|
-    t.string   "name"
-    t.string   "emoticon_set_ids", default: [], array: true
-    t.string   "color"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

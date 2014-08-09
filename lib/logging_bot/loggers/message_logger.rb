@@ -3,25 +3,29 @@ module LoggingBot
     class MessageLogger
       include BaseLogger
 
-      def save
+      def push(raw_message)
+        user = User.find_or_create(raw_message.user.nick)
+
         message_batch.push({
           id: SecureRandom.uuid,
           sent_at: raw_message.time.in_time_zone('UTC').as_json,
-          channel_id: message_batch.channel_id,
           user_name: user.name,
           emoticon_set_ids: user.emoticon_set_ids,
           color: user.color,
-          text: raw_message.message,
-          raw_text: raw_message.raw
+          text: raw_message.message
         }.stringify_keys)
 
         true
       end
 
-      protected
+      def save
+        message_batch.save
+      end
 
-      def user
-        @user ||= queue.user(raw_message.user.nick)
+      private
+
+      def message_batch
+        @message_batch ||= MessageBatch.new(channel_id: channel_id)
       end
     end
   end

@@ -3,7 +3,7 @@ module LoggingBot
     class UserDataLogger
       include BaseLogger
 
-      def save
+      def push(raw_message)
         if raw_message.user.nick == 'jtv'
           parts = raw_message.message.match(/([A-Z]+) (\S+)(?: (.+))?/)
 
@@ -17,8 +17,12 @@ module LoggingBot
         end
       end
 
+      def save
+        User.clear
+      end
+
       def update_from_parts(event, nick, value)
-        user = queue.user(nick)
+        user = User.find_or_create(nick)
 
         case event
         when 'EMOTESET'
