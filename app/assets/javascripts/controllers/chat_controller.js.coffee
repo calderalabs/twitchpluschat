@@ -47,13 +47,13 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
   addPastMessagesFromBatch: (messages, batch, time) ->
     lastBatchIndex = _(batch.mapBy('id')).indexOf(
       messages.get('lastObject.id'),
-      true # isSorted
+      true
     )
 
     startingIndex = if lastBatchIndex == -1 then 0 else lastBatchIndex
 
     for message in batch[startingIndex..-1]
-      isPast = message.get('createdAt') <= time
+      isPast = message.get('sentAt') <= time
       isAlreadyAdded = messages.findBy('id', message.get('id'))?
 
       if isPast && !isAlreadyAdded
@@ -62,7 +62,7 @@ Twitchpluschat.ChatController = Ember.ArrayController.extend
   removeFutureMessages: (messages, time) ->
     message = messages.get('lastObject')
 
-    while message? && message.get('createdAt') > time
+    while message? && message.get('sentAt') > time
       messages.popObject()
       message = messages.get('lastObject')
 

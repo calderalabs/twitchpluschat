@@ -24,6 +24,6 @@ Twitchpluschat.ApplicationStore = DS.Store.extend
         from_time: interval.get('from').getTime() / 1000
         to_time: interval.get('to').getTime() / 1000
         video_id: params.videoId
-      ).then (batch) -> batch.toArray().sortBy('createdAt'))
+      ).then (batch) -> batch.toArray().sortBy('sentAt'))
 
     @get('lastBatch')
